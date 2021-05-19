@@ -4,7 +4,7 @@ import time
 
 
 # ошибка на 5 дней {'message': 'requested time is out of allowed range of 5 days back'}
-# 'e58e191d40ba33dc8cb0a43aedccae12' api_key
+
 
 # функция для получения температуры (текущей/5 следующих дней/4 предыдущих дня) по координатам
 def get_temperature(city_with_coordinates: dict, api_key: str) -> dict:
