@@ -37,15 +37,30 @@ def clearing_data(df: pd.DataFrame):
 
 #  dataframe который содержить только те города, в которых больше всего отелей в стране
 def get_cities_with_max_numbers_of_hotel(df: pd.DataFrame):
-    piv = df.pivot_table(index=['City'], columns=['Country'], values='Name', aggfunc='count', fill_value=0)
-    dict_for_count_hotels = {}
-    for i in piv:
-        dict_for_count_hotels[i] = piv[i].idxmax()
-
-    df = df.loc[df['City'].isin(dict_for_count_hotels.values())]
-
+    df_cities = df.groupby(['Country', 'City'], as_index=False).agg({'Name': 'count'}).sort_values('Country') \
+        .sort_values('Name', ascending=False).drop_duplicates('Country')
+    df_cities['Location'] = df_cities[['Country', 'City']].apply(tuple, axis=1)
+    df['Location'] = df[['Country', 'City']].apply(tuple, axis=1)
+    df = df.loc[df['Location'].isin(df_cities['Location'])]
     df.reset_index(drop=True, inplace=True)
     return df
+
+
+def get_max_min_coordinates(df):
+    df = df.astype({'Latitude': float})
+    df = df.astype({'Longitude': float})
+
+    max_coordinates = df.groupby(['Location'], as_index=False).agg(
+        {'Latitude': 'max', 'Longitude': 'max'}).rename(
+        columns={'Latitude': 'Latitude_max', 'Longitude': 'Longitude_max'})  # максимальные значения координат
+
+    min_coordinates = df.groupby(['Location'], as_index=False).agg(
+        {'Latitude': 'min', 'Longitude': 'min'}).rename(
+        columns={'Latitude': 'Latitude_min', 'Longitude': 'Longitude_min'})  # минимальные значения координат
+
+    min_max_df = max_coordinates.merge(min_coordinates, on='Location')
+
+    return min_max_df
 
 
 if __name__ == '__main__':
@@ -53,4 +68,5 @@ if __name__ == '__main__':
     df = create_dataframe_from_csv_files('output_folder')
     df = clearing_data(df)
     df = get_cities_with_max_numbers_of_hotel(df)
+    df = get_max_min_coordinates(df)
     print(df)
