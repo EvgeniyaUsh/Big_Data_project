@@ -22,7 +22,8 @@ def get_temperature(city_with_coordinates: dict, api_key: str) -> dict:
 
     app_id = api_key
 
-    temperature_in_kelvin = {}
+    min_temperature_in_kelvin = {}
+    max_temperature_in_kelvin = {}
 
     for k, v in city_with_coordinates.items():
         lat = v[0]
@@ -52,24 +53,56 @@ def get_temperature(city_with_coordinates: dict, api_key: str) -> dict:
         data_4_days_ago = previous_4_days.json()
         data_next = next_day.json()
 
-        temperature_in_kelvin[k] = {date.today().strftime('%Y-%m-%d'): data_now['current']['temp'],
-                                    one_day_ago.strftime('%Y-%m-%d'): data_1_day_ago['current']['temp'],
-                                    two_days_ago.strftime('%Y-%m-%d'): data_2_days_ago['current']['temp'],
-                                    three_days_ago.strftime('%Y-%m-%d'): data_3_days_ago['current']['temp'],
-                                    four_days_ago.strftime('%Y-%m-%d'): data_4_days_ago['current']['temp'],
-                                    datetime.utcfromtimestamp(data_next['daily'][1:6][0]['dt']).strftime('%Y-%m-%d')
-                                    : data_next['daily'][1:6][0]['temp']['day'],
-                                    datetime.utcfromtimestamp(data_next['daily'][1:6][1]['dt']).strftime('%Y-%m-%d')
-                                    : data_next['daily'][1:6][1]['temp']['day'],
-                                    datetime.utcfromtimestamp(data_next['daily'][1:6][2]['dt']).strftime('%Y-%m-%d')
-                                    : data_next['daily'][1:6][2]['temp']['day'],
-                                    datetime.utcfromtimestamp(data_next['daily'][1:6][3]['dt']).strftime('%Y-%m-%d')
-                                    : data_next['daily'][1:6][3]['temp']['day'],
-                                    datetime.utcfromtimestamp(data_next['daily'][1:6][4]['dt']).strftime('%Y-%m-%d')
-                                    : data_next['daily'][1:6][4]['temp']['day'],
-                                    }
+        min_temperature_in_kelvin[k] = {date.today().strftime('%Y-%m-%d'): data_now['daily'][0]['temp']['min'],
+                                        one_day_ago.strftime('%Y-%m-%d'): min(
+                                            [i['temp'] for i in data_1_day_ago['hourly']]),
+                                        two_days_ago.strftime('%Y-%m-%d'): min(
+                                            [i['temp'] for i in data_2_days_ago['hourly']]),
+                                        three_days_ago.strftime('%Y-%m-%d'): min(
+                                            [i['temp'] for i in data_3_days_ago['hourly']]),
+                                        four_days_ago.strftime('%Y-%m-%d'): min(
+                                            [i['temp'] for i in data_4_days_ago['hourly']]),
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][0]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][0]['temp']['min'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][1]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][1]['temp']['min'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][2]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][2]['temp']['min'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][3]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][3]['temp']['min'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][4]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][4]['temp']['min'],
+                                        }
 
-    return temperature_in_kelvin
+        max_temperature_in_kelvin[k] = {date.today().strftime('%Y-%m-%d'): data_now['daily'][0]['temp']['max'],
+                                        one_day_ago.strftime('%Y-%m-%d'): max(
+                                            [i['temp'] for i in data_1_day_ago['hourly']]),
+                                        two_days_ago.strftime('%Y-%m-%d'): max(
+                                            [i['temp'] for i in data_2_days_ago['hourly']]),
+                                        three_days_ago.strftime('%Y-%m-%d'): max(
+                                            [i['temp'] for i in data_3_days_ago['hourly']]),
+                                        four_days_ago.strftime('%Y-%m-%d'): max(
+                                            [i['temp'] for i in data_4_days_ago['hourly']]),
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][0]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][0]['temp']['max'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][1]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][1]['temp']['max'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][2]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][2]['temp']['max'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][3]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][3]['temp']['max'],
+                                        datetime.utcfromtimestamp(data_next['daily'][1:6][4]['dt']).strftime(
+                                            '%Y-%m-%d')
+                                        : data_next['daily'][1:6][4]['temp']['max'],
+                                        }
 
-
-
+    return min_temperature_in_kelvin, max_temperature_in_kelvin

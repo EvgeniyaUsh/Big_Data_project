@@ -1,12 +1,15 @@
-# df.columns: Index(['Id', 'Name', 'Country', 'City', 'Latitude', 'Longitude'], dtype='object')
 import zipfile
 import pandas as pd
 import glob
+from temeratures import get_temperature
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
 
 
 def unpack_zip(path: str):
     z = zipfile.ZipFile(path, 'r')
-    z.extractall('output_folder')
+    z.extractall('csv_files_for_work')
 
 
 def create_dataframe_from_csv_files(path: str):
@@ -46,27 +49,50 @@ def get_cities_with_max_numbers_of_hotel(df: pd.DataFrame):
     return df
 
 
-def get_max_min_coordinates(df):
+def get_centre_coordinates(df):
     df = df.astype({'Latitude': float})
     df = df.astype({'Longitude': float})
+    df = df.groupby(['Location'], as_index=False).agg({'Latitude': 'mean', 'Longitude': 'mean'})
+    df = (df.set_index('Location').T.to_dict('list'))
+    return df
 
-    max_coordinates = df.groupby(['Location'], as_index=False).agg(
-        {'Latitude': 'max', 'Longitude': 'max'}).rename(
-        columns={'Latitude': 'Latitude_max', 'Longitude': 'Longitude_max'})  # максимальные значения координат
 
-    min_coordinates = df.groupby(['Location'], as_index=False).agg(
-        {'Latitude': 'min', 'Longitude': 'min'}).rename(
-        columns={'Latitude': 'Latitude_min', 'Longitude': 'Longitude_min'})  # минимальные значения координат
+def build_a_graph_with_min_temperature(min_temperarutes: dict):
+    df_min_temperatures = pd.DataFrame(min_temperarutes)
+    for i in df_min_temperatures:
+        country, city = i
+        ax = sns.lineplot(x=df_min_temperatures.index, y=df_min_temperatures[i])
+        plt.xticks(rotation=45)
+        ax.set_title('Min Temperature', fontsize=15)
+        ax.set_xlabel("t'C", fontsize=14)
+        ax.set_ylabel("Data", fontsize=14)
+        fig = ax.get_figure()
+        os.makedirs(f"output_folder/{country}/{city}")
+        fig.savefig(f"output_folder/{country}/{city}/min_temperature_in_{i}.png")
+        plt.clf()
 
-    min_max_df = max_coordinates.merge(min_coordinates, on='Location')
 
-    return min_max_df
+def build_a_graph_with_max_temperature(max_temperarutes: dict):
+    df_max_temperatures = pd.DataFrame(max_temperarutes)
+    for i in df_max_temperatures:
+        country, city = i
+        ax = sns.lineplot(x=df_max_temperatures.index, y=df_max_temperatures[i])
+        plt.xticks(rotation=45)
+        ax.set_title('Max Temperature', fontsize=15)
+        ax.set_xlabel("t'C", fontsize=14)
+        ax.set_ylabel("Data", fontsize=14)
+        fig = ax.get_figure()
+        fig.savefig(f"output_folder/{country}/{city}/max_temperature_in_{i}.png")
+        plt.clf()
 
 
 if __name__ == '__main__':
     unpack_zip('data/hotels.zip')
-    df = create_dataframe_from_csv_files('output_folder')
+    df = create_dataframe_from_csv_files('csv_files_for_work')
     df = clearing_data(df)
     df = get_cities_with_max_numbers_of_hotel(df)
-    df = get_max_min_coordinates(df)
-    print(df)
+    df = get_centre_coordinates(df)
+    temperarutes = get_temperature(df, 'api_key')
+    min_temperarutes, max_temperarutes = temperarutes
+    build_a_graph_with_min_temperature(min_temperarutes)
+    build_a_graph_with_max_temperature(max_temperarutes)
