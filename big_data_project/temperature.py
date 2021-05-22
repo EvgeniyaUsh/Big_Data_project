@@ -1,13 +1,14 @@
 import requests
 from datetime import date, timedelta, datetime
 import time
+import pandas as pd
 
 
 # ошибка на 5 дней {'message': 'requested time is out of allowed range of 5 days back'}
 
 
 # функция для получения температуры (текущей/5 следующих дней/4 предыдущих дня) по координатам
-def get_temperature(city_with_coordinates: dict, api_key: str) -> dict:
+def get_temperature(city_with_coordinates: pd.DataFrame, api_key: str) -> dict:
     one_day_ago = date.today() - timedelta(1)
     one_day_ago_ = int(time.mktime(one_day_ago.timetuple()))
 
