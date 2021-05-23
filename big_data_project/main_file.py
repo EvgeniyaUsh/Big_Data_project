@@ -222,9 +222,9 @@ def save_dataframe_in_csv(df: pd.DataFrame, path: str):
 @click.command()
 @click.argument('input_path')  # data/hotels.zip
 @click.argument('output_path')  # output_folder
-@click.argument('max_workers')  # 8
-@click.argument('api_key_weather')  # e58e191d40ba33dc8cb0a43aedccae12
-@click.argument('api_key_geo')  # 4qrq4ElHIb5idY3UYJG410XPjfrgpIUO
+@click.argument('max_workers')
+@click.argument('api_key_weather')
+@click.argument('api_key_geo')
 def main(input_path, output_path, max_workers, api_key_weather, api_key_geo):
     """
     Утилита предназначена для многопоточной обработки данных,
