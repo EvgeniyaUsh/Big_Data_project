@@ -50,4 +50,3 @@ def get_list_with_coordinates(df: pd.DataFrame) -> list:
     df['Coordinates'] = [concat_str(x, y) for x, y in zip(df.Latitude.values, df.Longitude.values)]
     list_with_coordinates = [i for i in df['Coordinates']]
     return list_with_coordinates
-
