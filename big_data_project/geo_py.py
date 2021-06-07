@@ -8,10 +8,10 @@ import pandas as pd
 def get_geo(list_of_coordinates: List[str], api_key: str, max_work: int) -> pd.DataFrame:
     """
     Функция получает адреса по координатам в многопоточном режиме
-    :param max_work:
-    :param list_of_coordinates:
-    :param api_key:
-    :return: dataframe с адресом и координатами
+    :param max_work: количество потоков для параллельной обработки данных
+    :param list_of_coordinates: список с координатами
+    :param api_key: API ключ для OpenMapQuest
+    :return df: dataframe с адресом и координатами
     """
     geolocator = OpenMapQuest(api_key=api_key)
     geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1 / 20)
@@ -25,8 +25,3 @@ def get_geo(list_of_coordinates: List[str], api_key: str, max_work: int) -> pd.D
     df['Address'] = df.index
     df = df.reset_index(drop=True)
     return df
-
-
-list_coordinates = ['40.91089, -111.40339', '42.183544, -122.663345']
-
-
