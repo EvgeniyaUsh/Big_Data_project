@@ -1,5 +1,5 @@
 import pytest
-from big_data_project.geo_py import get_geo
+from weather_analysis.app.geo_py import get_geo
 
 list_coordinates = ['40.91089, -111.40339', '42.183544, -122.663345']
 

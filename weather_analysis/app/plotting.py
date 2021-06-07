@@ -7,7 +7,7 @@ import os
 def build_a_graph_with_min_temperature(min_temperature: dict, path: str):
     """
     Функция строит графики минимальной температуры, с зависимостью от даты
-    :param min_temperature:
+    :param min_temperature: словарь с ключами-датами и минимальными температурами
     :param path: путь для сохранения графиков
     """
     df_min_temperatures = pd.DataFrame(min_temperature)
@@ -27,7 +27,7 @@ def build_a_graph_with_min_temperature(min_temperature: dict, path: str):
 def build_a_graph_with_max_temperature(max_temperature: dict, path: str):
     """
      Функция строит графики максимальной температуры, с зависимостью от даты
-     :param max_temperature:
+     :param max_temperature:  словарь с ключами-датами и макимальными температурами
      :param path: путь для сохранения графиков
      """
     df_max_temperatures = pd.DataFrame(max_temperature)

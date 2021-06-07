@@ -1,3 +1,4 @@
+import pandas as pd
 
 
 def get_cities_with_max_numbers_of_hotel(df: pd.DataFrame) -> pd.DataFrame:

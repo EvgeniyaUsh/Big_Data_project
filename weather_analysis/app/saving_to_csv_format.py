@@ -1,4 +1,6 @@
 import csv
+import math
+import os
 import pandas as pd
 
 
@@ -38,6 +40,6 @@ def save_dataframe_in_csv(df: pd.DataFrame, path: str):
                   range(number_of_splits)]
     file_writers = [csv.writer(v, lineterminator='\n') for v in file_opens]
     for i, row in df.iterrows():
-        file_writers[math.int((i / df.shape[0]) * number_of_splits)].writerow(row.tolist())
+        file_writers[math.floor((i / df.shape[0]) * number_of_splits)].writerow(row.tolist())
     for file in file_opens:
         file.close()

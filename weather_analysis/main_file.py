@@ -1,24 +1,20 @@
-import csv
-import math
-import zipfile
 import click as click
-import pandas as pd
-import glob
-from temperatures import get_temperature
-import os
-from geo_py import get_geo
-from plotting import build_a_graph_with_max_temperature, build_a_graph_with_min_temperature
-from post_processing import get_day_and_city_with_max_temperature, get_day_and_city_with_min_temperature, \
+from app.temperatures import get_temperature
+from app.geo_py import get_geo
+from app.plotting import build_a_graph_with_max_temperature, build_a_graph_with_min_temperature
+from app.post_processing import get_day_and_city_with_max_temperature, get_day_and_city_with_min_temperature, \
     get_city_with_max_change_in_max_temperature, get_day_and_city_with_max_difference_between_max_min_temp
-from saving_to_csv_format import get_dataframe_with_address_and_write_csv, save_dataframe_in_csv
+from app.saving_to_csv_format import get_dataframe_with_address_and_write_csv
+from app.data_preparation import unpack_zip, create_dataframe_from_csv_files, clearing_data
+from app.data_processing import get_centre_coordinates, get_list_with_coordinates, get_cities_with_max_numbers_of_hotel
 
 
 @click.command()
 @click.argument('input_path')  # data/hotels.zip
-@click.argument('output_path')  # output_folder
+@click.argument('output_path')  # путь для сохранения полученных результатов
 @click.argument('max_workers')
-@click.argument('api_key_weather')  # e25c6ede689bcfda9998c67a52b0612a
-@click.argument('api_key_geo')  # GPm29mRy2v4JMGHGdtAxbOcyakPfFGVy
+@click.argument('api_key_weather')  # API ключ с сайта  https://openweathermap.org/appid
+@click.argument('api_key_geo')  # API ключ с сайта https://developer.mapquest.com/
 def main(input_path, output_path, max_workers, api_key_weather, api_key_geo):
     """
     Утилита предназначена для многопоточной обработки данных,
@@ -48,7 +44,7 @@ def main(input_path, output_path, max_workers, api_key_weather, api_key_geo):
 
     dict_with_centre_of_coordinates = get_centre_coordinates(df)
     min_temperature, max_temperature = get_temperature(dict_with_centre_of_coordinates, api_key_weather)
-    print('Температуры для каждого дня получена')
+    print('Температуры для каждого дня получены')
 
     build_a_graph_with_min_temperature(min_temperature, output_path)
     build_a_graph_with_max_temperature(max_temperature, output_path)

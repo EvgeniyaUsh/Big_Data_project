@@ -6,10 +6,11 @@ def get_day_and_city_with_max_temperature(max_temperature: dict, path: str):
     Функция находит город и день с максимальной температурой за рассматриваемый период и сохраняет
     полученную информацию в csv формате;
     :param max_temperature: словарь с максимальными температурами для каждого дня за рассматриваемый период
+    :param path: путь для сохранения csv файла
     :return:
     """
     df = pd.DataFrame(max_temperature)
-    city_with_max_temperature = df.max()[df.max() == df.max(axis=1).max()].index  # axis=0 - строки, axis=1 - колонки
+    city_with_max_temperature = df.max()[df.max() == df.max(axis=1).max()].index
     data_max_temperature = df.idxmax()[city_with_max_temperature][0]
 
     city, country = city_with_max_temperature[0][1], city_with_max_temperature[0][0]
@@ -24,6 +25,7 @@ def get_city_with_max_change_in_max_temperature(max_temperature: dict, path: str
     Функция находит город с максимальным изменением максимальной температуры за рассматриваемый период и сохраняет
     полученную информацию в csv формате;
     :param max_temperature: словарь с максимальными температурами для каждого дня за рассматриваемый период
+    :param path: путь для сохранения csv файла
     :return:
     """
     df = pd.DataFrame(max_temperature)
@@ -42,6 +44,7 @@ def get_day_and_city_with_min_temperature(min_temperature: dict, path: str):
     Функция находит город и день наблюдения с минимальной температурой за рассматриваемый период и сохраняет
     полученную информацию в csv формате;
     :param min_temperature: словарь с минимальными температурами для каждого дня за рассматриваемый период
+    :param path: путь для сохранения csv файла
     :return:
     """
     df = pd.DataFrame(min_temperature)
@@ -61,6 +64,7 @@ def get_day_and_city_with_max_difference_between_max_min_temp(max_temperature: d
     рассматриваемый период и сохраняет полученную информацию в csv формате;
     :param max_temperature: словарь с максимальными температурами для каждого дня за рассматриваемый период
     :param min_temperature: словарь с минимальными температурами для каждого дня за рассматриваемый период
+    :param path: путь для сохранения csv файла
     :return:
     """
     df_with_max_temp = pd.DataFrame(max_temperature)
